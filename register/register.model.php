@@ -9,17 +9,17 @@
 
 declare(strict_types=1);
 
-function getUsername(object $conn, string $username)
-{
-    $query = "SELECT username FROM users WHERE username= :username;";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(":username", $username);
-    $stmt->execute();
+// function getUsername(object $conn, string $username)
+// {
+//     $query = "SELECT username FROM users WHERE username= :username;";
+//     $stmt = $conn->prepare($query);
+//     $stmt->bindParam(":username", $username);
+//     $stmt->execute();
 
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+//     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $result;
-}
+//     return $result;
+// }
 
 function getEmail(object $conn, string $email)
 {
@@ -33,9 +33,9 @@ function getEmail(object $conn, string $email)
 
 // we will be using password encryption for security and to prevent brute forcing
 
-function set_user(object $conn, string $name, string $username, string $email, string $password)
+function set_user(object $conn, string $name, string $email, string $password)
 {
-    $query = "INSERT INTO users (name,username,email,password) VALUES (:name,:username,:email,:password);";
+    $query = "INSERT INTO users (name,email,password) VALUES (:name,:email,:password);";
     $stmt = $conn->prepare($query);
     // BRUTE FORCING PREVENTION
     $options = [
@@ -43,7 +43,6 @@ function set_user(object $conn, string $name, string $username, string $email, s
     ];
     $hashedPwd = password_hash($password, PASSWORD_BCRYPT, $options);
     $stmt->bindParam(":name", $name);
-    $stmt->bindParam(":username", $username);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":password", $hashedPwd);
     $stmt->execute();

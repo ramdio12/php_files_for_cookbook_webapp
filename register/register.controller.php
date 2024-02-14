@@ -9,20 +9,20 @@
 */
 declare(strict_types=1);
 
-function isEmpty(string $name, string $username, string $email, string $password)
+function isEmpty(string $name, string $email, string $password)
 {
 
-	if (empty($name) || empty($username) || empty($email) || empty($password)) {
+	if (empty($name) || empty($email) || empty($password)) {
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function isShort(string $name, string $username, string $email, string $password)
+function isShort(string $name, string $email)
 {
 
-	if (strlen($name)<2 || strlen($username)<2 || strlen($email)<2 || strlen($password)<2) {
+	if (strlen($name)<2 || strlen($email)<2) {
 		return true;
 	} else {
 		return false;
@@ -57,15 +57,8 @@ function isEmailTaken(object $conn, string $email)
 	}
 }
 
-function isUsernameTaken(object $conn, string $username)
+
+function create_user(object $conn, string $name, string $email, string $password)
 {
-	if (getUsername($conn, $username)) {
-		return true;
-	} else {
-		return false;
-	}
-}
-function create_user(object $conn, string $name, string $username, string $email, string $password)
-{
-	set_user($conn, $name, $username, $email, $password);
+	set_user($conn, $name, $email, $password);
 }

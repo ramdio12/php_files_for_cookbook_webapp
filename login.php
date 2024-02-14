@@ -5,6 +5,7 @@ include 'headers.php';
 include 'DbConnect.php';
 include_once 'login/login.controller.php';
 include_once 'login/login.model.php';
+include_once 'utilities/utility.php';
 
 $objDb = new DbConnect();
 $conn = $objDb->connect();
@@ -12,31 +13,29 @@ $conn = $objDb->connect();
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $user = json_decode(file_get_contents('php://input'));
-    $username = htmlspecialchars($_POST["username"]);
-    $password = htmlspecialchars($_POST["password"]);
+    $email = sanitize($_POST["email"]);
+    $password = sanitize($_POST["password"]);
 
     try {
 
         $errors = [];
         $success = [];
 
-        if (is_input_empty($username, $password)) {
+        if (is_input_empty($email, $password)) {
             $errors["error"] = "Fill  all the fields";
         }
 
-        $result = get_user($conn, $username);
+        $result = get_user($conn, $email);
 
-        if (is_username_wrong($result)) {
+        if (is_email_wrong($result)) {
             $errors["error"] = "Incorrect credential!";
-        } else if (!is_username_wrong($result) && is_password_wrong($password, $result["password"])) {
+        } else if (!is_email_wrong($result) && is_password_wrong($password, $result["password"])) {
             $errors["error"] = "Incorrect credential!";
         } else {
             $success = array(
                 'success' => 'Login successful! Redirecting...',
                 'data' => array(
-                    'email' => htmlspecialchars($result['email']),
-                    'username' => htmlspecialchars($result['username']),
+                    'name' => htmlspecialchars($result['name']),
                     "id" => $result['id']
                 ),
 

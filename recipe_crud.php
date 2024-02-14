@@ -5,6 +5,7 @@
 
 include 'headers.php';
 include 'DbConnect.php';
+include_once 'utilities/utility.php';
 $objDb = new DbConnect();
 $conn = $objDb->connect();
 
@@ -20,11 +21,11 @@ switch ($method) {
             );
         } else {
             if (isset($_FILES['photo'])) {
-                $title = $_POST['title'];
-                $description = $_POST['description'];
-                $ingredients = $_POST['ingredients'];
-                $instructions = $_POST['instructions'];
-                $users_id = $_POST['users_id'];
+                $title = sanitize($_POST['title']);
+                $description = sanitize($_POST['description']);
+                $ingredients = sanitize($_POST['ingredients']);
+                $instructions = sanitize($_POST['instructions']);
+                $users_id = sanitize($_POST['users_id']);
                 $photo = $_FILES['photo']['name'];
                 $photo_temp = $_FILES['photo']['tmp_name'];
                 $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads' . "/" . $photo;
@@ -74,9 +75,10 @@ switch ($method) {
         echo json_encode($response);
         break;
 
+// fetch all recipe data and display it on dashboard or homepage
     case "GET":
         $id = $_GET['id'];
-        $sql = "SELECT posts.id, posts.title,posts.description,posts.ingredients,posts.instructions,posts.photo,users.username FROM users RIGHT JOIN posts ON users.id = posts.users_id WHERE posts.id=:id";
+        $sql = "SELECT posts.id, posts.title,posts.description,posts.ingredients,posts.instructions,posts.photo,users.name FROM users RIGHT JOIN posts ON users.id = posts.users_id WHERE posts.id=:id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
