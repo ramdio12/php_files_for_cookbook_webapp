@@ -75,7 +75,7 @@ switch ($method) {
         echo json_encode($response);
         break;
 
-// fetch all recipe data and display it on dashboard or homepage
+// fetch all recipe data of a user and display it on My Recipe page
     case "GET":
         $id = $_GET['id'];
         $sql = "SELECT posts.id, posts.title,posts.description,posts.ingredients,posts.instructions,posts.photo,users.name FROM users RIGHT JOIN posts ON users.id = posts.users_id WHERE posts.id=:id";
