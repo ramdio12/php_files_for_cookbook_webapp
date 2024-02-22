@@ -1,28 +1,30 @@
 <?php
 
+/*
+
+after the user enter an email\
+This file will fetch data from the data base. If the result returns 1 or more, then the user will be warned
+*/
+include 'Database/headers.php';
+include 'utilities/Utilities.php';
+include 'User/UserController.php';
+
+$userContr = new UserController;
 
 
-include 'headers.php';
-include 'DbConnect.php';
-$objDb = new DbConnect();
-$conn = $objDb->connect();
+$errors = [];
 
 // checking email, if the result is greater than 0, it means the email is already registered
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $user = json_decode(file_get_contents('php://input'));
-    $email = $_POST['email'];
+    $email = Utilities::sanitizeInput($_POST['email']);
 
+    $user = $userContr->isEmailExist($email);
 
-    if (!empty($email)) {
-        $sql = "SELECT * FROM users WHERE email=:email";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            $response = ['status' => "duplicate", 'message' => 'Email already registered!'];
-        }
+    if ($user) {
+        $errors['error'] = "Email is already taken";
     }
 
-    echo json_encode($response);
+    if ($errors) {
+        echo json_encode($errors);
+    }
 }
